@@ -1,5 +1,7 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, OnDestroy, OnInit} from '@angular/core';
 import {ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
+import {takeUntil} from 'rxjs/internal/operators';
+import {Subject} from 'rxjs/index';
 
 @Component({
   selector: 'app-employee-editor',
@@ -14,8 +16,9 @@ import {ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validat
     },
   ]
 })
-export class EditorComponent implements OnInit, ControlValueAccessor {
+export class EditorComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
+  private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
   private onTouched: (_: any) => void;
   private onChange: (data: any) => void;
   employeeForm: FormGroup;
@@ -28,11 +31,15 @@ export class EditorComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit() {
-    this.employeeForm.valueChanges.subscribe((employee) => {
-      if (this.onChange) {
-        this.onChange(employee);
-      }
-    });
+    this.employeeForm.valueChanges
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe((employee) => {
+        if (this.onChange) {
+          this.onChange(employee);
+        }
+      });
   }
 
 
@@ -47,6 +54,11 @@ export class EditorComponent implements OnInit, ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
 }
