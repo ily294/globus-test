@@ -26,7 +26,6 @@ export class EmployeeModalComponent implements OnInit {
 
   save() {
     const employee = Object.assign(this.data.employee, this.employeeForm.value.employee);
-    console.log(this.employeeForm);
     this.data.saver(employee).subscribe((data) => {
       this.dialogRef.close(data);
     });
