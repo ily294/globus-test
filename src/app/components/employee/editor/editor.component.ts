@@ -26,7 +26,7 @@ export class EditorComponent implements OnInit, OnDestroy, ControlValueAccessor 
   constructor(private formBuilder: FormBuilder, private changeDetectorRef: ChangeDetectorRef) {
     this.employeeForm = this.formBuilder.group({
       name: [''],
-      personnelNumber: ['', [Validators.min(10000), Validators.max(999999)]],
+      personnelNumber: [''],
     });
   }
 
