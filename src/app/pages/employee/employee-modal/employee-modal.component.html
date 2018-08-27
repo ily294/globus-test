@@ -1,0 +1,13 @@
+<form [formGroup]="employeeForm">
+
+  <div>
+    <app-employee-editor formControlName="employee">
+    </app-employee-editor>
+  </div>
+  <div>
+    <button mat-raised-button (click)="save()">
+      Сохранить
+    </button>
+  </div>
+
+</form>
